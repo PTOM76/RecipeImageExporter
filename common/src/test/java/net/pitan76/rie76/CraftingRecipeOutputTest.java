@@ -18,6 +18,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * ファイルの生成がtest_1.pngのように連番で行われることを確認するためのテスト
+ */
 class CraftingRecipeOutputTest {
 
     @TempDir
