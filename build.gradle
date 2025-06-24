@@ -1,6 +1,6 @@
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "1.6-SNAPSHOT" apply false
+    id "dev.architectury.loom" version "1.7-SNAPSHOT" apply false
     id 'com.matthewprenger.cursegradle' version '1.+'
     id "com.modrinth.minotaur" version "2.+"
 }
@@ -35,6 +35,7 @@ subprojects {
         mappings "net.fabricmc:yarn:${rootProject.yarn_mappings}:v2"
 
         modApi "net.pitan76:mcpitanlib-common-${rootProject.mcpitanlib_version}"
+
         modApi "me.shedaniel:RoughlyEnoughItems-api:${rootProject.rei_version}"
         modApi "me.shedaniel:RoughlyEnoughItems-default-plugin:${rootProject.rei_version}"
     }
@@ -141,15 +142,7 @@ allprojects {
 
     tasks.withType(JavaCompile).configureEach {
         options.encoding = "UTF-8"
-        if (project.name == "neoforge") {
-            options.release = 17
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
-        } else {
-            options.release = 8
-            sourceCompatibility = JavaVersion.VERSION_1_8
-            targetCompatibility = JavaVersion.VERSION_1_8
-        }
+        options.release = 17
     }
 
     java {

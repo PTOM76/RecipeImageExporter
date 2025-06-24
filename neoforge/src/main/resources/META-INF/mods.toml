@@ -8,7 +8,7 @@ version = "${version}"
 displayName = "${mod_name}"
 #updateJSONURL="http://myurl.me/"
 #displayURL="http://example.com/"
-logoFile = "assets/reirbe76/icon.png"
+logoFile = "assets/rie76/icon.png"
 #credits="Thanks for this example mod goes to Java"
 authors = "Pitan"
 description = '''
@@ -35,9 +35,3 @@ mandatory = true
 versionRange = "[3.0.0,)"
 ordering = "BEFORE"
 side = "BOTH"
-
-[[mixins]]
-config = "reirbe76-common.mixins.json"
-
-[[mixins]]
-config = "reirbe76.mixins.json"

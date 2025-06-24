@@ -9,20 +9,16 @@
   ],
   "contact": {},
   "license": "MIT",
-  "icon": "assets/reirbe76/icon.png",
+  "icon": "assets/rie76/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.pitan76.reirbe76.fabric.REIRecipeBatchExporterFabric"
+      "net.pitan76.rie76.fabric.RecipeImageExporterFabric"
     ]
   },
-  "mixins": [
-    "reirbe76.mixins.json",
-    "reirbe76-common.mixins.json"
-  ],
   "depends": {
     "fabricloader": "*",
-    "minecraft": "\u003e\u003d1.16",
+    "minecraft": "*",
     "mcpitanlib": "*"
   }
 }
