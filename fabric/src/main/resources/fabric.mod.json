@@ -3,7 +3,7 @@
   "id": "${mod_id}",
   "version": "${version}",
   "name": "${mod_name}",
-  "description": "This REI addon exports all recipe images in bulk, organized by each mod.",
+  "description": "The mod exports all recipe images in bulk, organized by each mod.",
   "authors": [
     "Pitan"
   ],

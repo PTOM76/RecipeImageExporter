@@ -12,7 +12,7 @@ logoFile = "assets/rie76/icon.png"
 #credits="Thanks for this example mod goes to Java"
 authors = "Pitan"
 description = '''
-This REI addon exports all recipe images in bulk, organized by each mod.
+The mod exports all recipe images in bulk, organized by each mod.
 '''
 
 [[dependencies.${mod_id}]]
