@@ -148,4 +148,10 @@ allprojects {
     java {
         withSourcesJar()
     }
+
+    tasks.register("githubReleaseAll") {
+        dependsOn subprojects.collect { it.tasks.named("githubRelease") }
+    }
+
+
 }

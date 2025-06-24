@@ -98,3 +98,19 @@ publishing {
         // Add repositories to publish to here.
     }
 }
+
+tasks.register("githubRelease") {
+    dependsOn tasks.remapJar
+
+    doLast {
+        def tag = "v${project.mod_version}"
+        def releaseName = "${rootProject.mod_name} v${project.mod_version}-${project.name}"
+
+        exec {
+            commandLine "gh", "release", "create", tag,
+                    "--title", releaseName,
+                    "--notes", rootProject.changelog,
+                    "build/libs/${archivesBaseName}-${version}.jar"
+        }
+    }
+}
