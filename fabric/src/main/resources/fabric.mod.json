@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "${mod_name}",
+  "description": "This REI addon exports all recipe images in bulk, organized by each mod.",
+  "authors": [
+    "Pitan"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/reirbe76/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.pitan76.reirbe76.fabric.REIRecipeBatchExporterFabric"
+    ]
+  },
+  "mixins": [
+    "reirbe76.mixins.json",
+    "reirbe76-common.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": "*",
+    "minecraft": "\u003e\u003d1.16",
+    "mcpitanlib": "*"
+  }
+}
