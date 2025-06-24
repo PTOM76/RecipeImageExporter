@@ -98,7 +98,7 @@ tasks.register("githubRelease") {
     dependsOn tasks.remapJar
 
     doLast {
-        def tag = "v${project.mod_version}"
+        def tag = "v${project.mod_version}-${project.name}"
         def releaseName = "${rootProject.mod_name} v${project.mod_version}-${project.name}"
 
         exec {
