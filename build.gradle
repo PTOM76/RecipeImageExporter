@@ -150,8 +150,8 @@ allprojects {
     }
 
     tasks.register("githubReleaseAll") {
-        dependsOn subprojects.collect { it.tasks.named("githubRelease") }
+        subprojects.findAll { it.name != "common" }.each { subproject ->
+            dependsOn subproject.tasks.named("githubRelease")
+        }
     }
-
-
 }
