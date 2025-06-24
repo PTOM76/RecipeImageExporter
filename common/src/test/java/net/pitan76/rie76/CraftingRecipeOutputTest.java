@@ -103,7 +103,7 @@ class CraftingRecipeOutputTest {
         assertTrue(secondFile.createNewFile());
 
         // さらに実行し、次の連番が付与されることを確認
-        File thirdFile = (File) getUniqueFile_invoke(null, tempDir, "test.png");
+        File thirdFile = (File) getUniqueFileMethod.invoke(null, tempDir, "test.png");
         assertEquals("test_2.png", thirdFile.getName());
     }
 }
