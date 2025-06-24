@@ -11,6 +11,9 @@ import net.pitan76.mcpitanlib.api.event.StringCommandEvent;
 import net.pitan76.mcpitanlib.api.registry.v2.CompatRegistryV2;
 import net.pitan76.mcpitanlib.api.util.CompatIdentifier;
 import net.pitan76.mcpitanlib.api.util.PlatformUtil;
+import net.pitan76.mcpitanlib.api.util.client.ClientUtil;
+
+import java.io.File;
 
 public class RecipeImageExporter extends CommonModInitializer {
     public static final String MOD_ID = "rie76";
@@ -46,9 +49,10 @@ public class RecipeImageExporter extends CommonModInitializer {
 
                         RenderSystem.recordRenderCall(() -> {
                             CraftingRecipeOutput.exportCraftingRecipesForMod(modid);
-                            // フレームバッファ生成＆画像出力など
                         });
-                        e.sendSuccess("Exported recipes for mod ID: " + modid);
+
+                        File exportDir = new File(ClientUtil.getRunDirectory(), "rie76/" + modid);
+                        e.sendSuccess("Exported recipes to \"" + exportDir.toString() + "/\" directory.");
                     }
                 });
             }
