@@ -38,7 +38,6 @@ class CraftingRecipeOutputTest {
 
     @Test
     void testGetRecipeGrid_ShapedRecipe() throws Exception {
-        // モックのShapedRecipeを作成
         ShapedRecipe mockRecipe = mock(ShapedRecipe.class);
 
         DefaultedList<Ingredient> ingredients = DefaultedList.ofSize(4);
@@ -51,10 +50,8 @@ class CraftingRecipeOutputTest {
         when(mockRecipe.getWidth()).thenReturn(2);
         when(mockRecipe.getHeight()).thenReturn(2);
 
-        // テスト対象メソッドの実行
         ItemStack[][] grid = (ItemStack[][]) getRecipeGridMethod.invoke(null, mockRecipe);
 
-        // 結果の検証
         assertAll(
                 () -> assertEquals(Items.STONE, grid[0][0].getItem(), "Item at [0][0] should be STONE"),
                 () -> assertEquals(Items.COBBLESTONE, grid[0][1].getItem(), "Item at [0][1] should be COBBLESTONE"),
@@ -67,7 +64,6 @@ class CraftingRecipeOutputTest {
 
     @Test
     void testGetRecipeGrid_ShapelessRecipe() throws Exception {
-        // モックのShapelessRecipeを作成
         ShapelessRecipe mockRecipe = mock(ShapelessRecipe.class);
         DefaultedList<Ingredient> ingredients = DefaultedList.ofSize(2);
         ingredients.set(0, Ingredient.ofItems(Items.APPLE));
@@ -75,10 +71,8 @@ class CraftingRecipeOutputTest {
 
         when(mockRecipe.getIngredients()).thenReturn(ingredients);
 
-        // テスト対象メソッドの実行
         ItemStack[][] grid = (ItemStack[][]) getRecipeGridMethod.invoke(null, mockRecipe);
 
-        // 結果の検証
         assertAll(
                 () -> assertEquals(Items.APPLE, grid[0][0].getItem(), "Item at [0][0] should be APPLE"),
                 () -> assertEquals(Items.GOLDEN_APPLE, grid[0][1].getItem(), "Item at [0][1] should be GOLDEN_APPLE"),
@@ -93,16 +87,14 @@ class CraftingRecipeOutputTest {
         File firstFile = (File) getUniqueFileMethod.invoke(null, tempDir, "test.png");
         assertEquals("test.png", firstFile.getName());
 
-        // 同名ファイルを作成
+        // 同名ファイルの作成
         assertTrue(firstFile.createNewFile());
 
-        // 再度実行し、連番が付与されることを確認
         File secondFile = (File) getUniqueFileMethod.invoke(null, tempDir, "test.png");
         assertEquals("test_1.png", secondFile.getName());
 
         assertTrue(secondFile.createNewFile());
 
-        // さらに実行し、次の連番が付与されることを確認
         File thirdFile = (File) getUniqueFileMethod.invoke(null, tempDir, "test.png");
         assertEquals("test_2.png", thirdFile.getName());
     }
