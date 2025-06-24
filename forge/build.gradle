@@ -36,7 +36,9 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 
-    modApi "net.pitan76:mcpitanlib-forge+${rootProject.mcpitanlib_version}"
+    modApi "net.pitan76:mcpitanlib-forge-${rootProject.mcpitanlib_version}"
+    modApi "me.shedaniel:RoughlyEnoughItems-api-forge:${rootProject.rei_version}"
+    modApi "me.shedaniel:RoughlyEnoughItems-default-plugin-forge:${rootProject.rei_version}"
 }
 
 processResources {

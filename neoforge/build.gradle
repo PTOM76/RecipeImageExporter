@@ -27,7 +27,9 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
 
-    modApi "net.pitan76:mcpitanlib-neoforge+${rootProject.mcpitanlib_version}"
+    modApi "net.pitan76:mcpitanlib-neoforge-${rootProject.mcpitanlib_version}"
+    modApi "me.shedaniel:RoughlyEnoughItems-api-neoforge:${rootProject.rei_version}"
+    modApi "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:${rootProject.rei_version}"
 }
 
 processResources {

@@ -34,7 +34,9 @@ subprojects {
         // Fabric Yarn Mappings
         mappings "net.fabricmc:yarn:${rootProject.yarn_mappings}:v2"
 
-        modApi "net.pitan76:mcpitanlib-common+${rootProject.mcpitanlib_version}"
+        modApi "net.pitan76:mcpitanlib-common-${rootProject.mcpitanlib_version}"
+        modApi "me.shedaniel:RoughlyEnoughItems-api:${rootProject.rei_version}"
+        modApi "me.shedaniel:RoughlyEnoughItems-default-plugin:${rootProject.rei_version}"
     }
 
     /*
