@@ -11,9 +11,16 @@ import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.*;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
+import net.minecraft.world.World;
+import net.pitan76.mcpitanlib.api.client.render.DrawObjectDM;
+import net.pitan76.mcpitanlib.api.util.CompatIdentifier;
+import net.pitan76.mcpitanlib.api.util.IngredientUtil;
+import net.pitan76.mcpitanlib.api.util.ItemStackUtil;
+import net.pitan76.mcpitanlib.api.util.client.ClientUtil;
+import net.pitan76.mcpitanlib.api.util.client.MatrixStackUtil;
+import net.pitan76.mcpitanlib.api.util.client.RenderUtil;
+import net.pitan76.mcpitanlib.api.util.item.ItemUtil;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
@@ -24,23 +31,24 @@ import java.util.List;
 public class CraftingRecipeOutput {
     private static final int IMAGE_WIDTH = 232;
     private static final int IMAGE_HEIGHT = 108;
-    private static final Identifier CRAFTING_TABLE_TEXTURE = new Identifier("textures/gui/container/crafting_table.png");
+
+    private static final CompatIdentifier CRAFTING_TABLE_TEXTURE = CompatIdentifier.of("textures/gui/container/crafting_table.png");
 
     public static void exportCraftingRecipesForMod(String modId) {
-        MinecraftClient mc = MinecraftClient.getInstance();
-        RecipeManager recipeManager = mc.world.getRecipeManager();
+        World world = ClientUtil.getWorld();
+        RecipeManager recipeManager = world.getRecipeManager();
 
         List<RecipeEntry<CraftingRecipe>> recipes = recipeManager.listAllOfType(RecipeType.CRAFTING);
 
         for (RecipeEntry<CraftingRecipe> recipe : recipes) {
-            ItemStack result = recipe.value().getResult(mc.world.getRegistryManager());
-            Identifier recipeItemId = Registries.ITEM.getId(result.getItem());
-            if (!recipeItemId.getNamespace().equals(modId)) continue;
+            ItemStack result = recipe.value().getResult(world.getRegistryManager());
+            CompatIdentifier itemId = ItemUtil.toId(result.getItem());
+            if (!itemId.getNamespace().equals(modId)) continue;
             
-            File exportDir = new File(mc.runDirectory, "recipe_exports/" + modId);
+            File exportDir = new File(ClientUtil.getRunDirectory(), "rie76/" + modId);
             exportDir.mkdirs();
 
-            String baseName = recipeItemId.getPath();
+            String baseName = itemId.getPath();
             File outputFile = getUniqueFile(exportDir, baseName + ".png");
 
             exportRecipeImage(recipe.value(), outputFile);
@@ -59,7 +67,8 @@ public class CraftingRecipeOutput {
     }
 
     private static void exportRecipeImage(CraftingRecipe recipe, File outputFile) {
-        MinecraftClient mc = MinecraftClient.getInstance();
+        MinecraftClient client = ClientUtil.getClient();
+        World world = ClientUtil.getWorld();
 
         float scale = 2.0f;
         int scaledWidth = (int) (IMAGE_WIDTH * scale);
@@ -69,14 +78,16 @@ public class CraftingRecipeOutput {
 
         RenderSystem.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, MinecraftClient.IS_SYSTEM_MAC);
 
-        DrawContext drawContext = new DrawContext(mc, mc.getBufferBuilders().getEntityVertexConsumers());
-        MatrixStack matrixStack = drawContext.getMatrices();
+        DrawContext drawContext = new DrawContext(client, client.getBufferBuilders().getEntityVertexConsumers());
+        MatrixStack matrices = drawContext.getMatrices();
+
+        DrawObjectDM drawObject = new DrawObjectDM(drawContext);
 
         // 高解像度化のためにスケーリング
-        matrixStack.push();
+        MatrixStackUtil.push(matrices);
         Matrix4f projMatrix = new Matrix4f().setOrtho(0.0F, (float)IMAGE_WIDTH, (float)IMAGE_HEIGHT, 0.0F, 1000.0F, 3000.0F);
         RenderSystem.setProjectionMatrix(projMatrix, VertexSorter.BY_Z);
-        matrixStack.translate(0.0, 0.0, -2000.0);
+        MatrixStackUtil.translate(matrices, 0.0, 0.0, -2000.0);
 
         DiffuseLighting.enableGuiDepthLighting();
 
@@ -85,7 +96,8 @@ public class CraftingRecipeOutput {
 
         int gridX = 0;
         int gridY = 0;
-        drawContext.drawTexture(CRAFTING_TABLE_TEXTURE, gridX, gridY, 29, 16, 116, 54);
+
+        RenderUtil.RendererUtil.drawTexture(drawObject, CRAFTING_TABLE_TEXTURE, gridX, gridY, 29, 16, 116, 54);
 
         ItemStack[][] recipeGrid = getRecipeGrid(recipe);
         for (int row = 0; row < 3; row++) {
@@ -93,7 +105,7 @@ public class CraftingRecipeOutput {
                 ItemStack stack = recipeGrid[row][col];
                 if (!stack.isEmpty()) {
                     drawContext.drawItem(stack, gridX + col * 18 + 1, gridY + row * 18 + 1);
-                    drawContext.drawItemInSlot(mc.textRenderer, stack, gridX + col * 18 + 1, gridY + row * 18 + 1);
+                    drawContext.drawItemInSlot(client.textRenderer, stack, gridX + col * 18 + 1, gridY + row * 18 + 1);
                 }
             }
         }
@@ -101,14 +113,14 @@ public class CraftingRecipeOutput {
         int resultX = gridX + 90;
         int resultY = gridY + (54 - 26) / 2;
 
-        ItemStack resultStack = recipe.getResult(mc.world.getRegistryManager());
+        ItemStack resultStack = recipe.getResult(world.getRegistryManager());
         if (!resultStack.isEmpty()) {
             drawContext.drawItem(resultStack, resultX + 5, resultY + 5);
-            drawContext.drawItemInSlot(mc.textRenderer, resultStack, resultX + 5, resultY + 5);
+            drawContext.drawItemInSlot(client.textRenderer, resultStack, resultX + 5, resultY + 5);
         }
 
         drawContext.draw();
-        matrixStack.pop();
+        matrices.pop();
 
         NativeImage nativeImage = new NativeImage(scaledWidth, scaledHeight, false);
         RenderSystem.bindTexture(framebuffer.getColorAttachment());
@@ -116,7 +128,7 @@ public class CraftingRecipeOutput {
         nativeImage.mirrorVertically();
 
         framebuffer.delete();
-        mc.getFramebuffer().beginWrite(true);
+        client.getFramebuffer().beginWrite(true);
 
         Util.getIoWorkerExecutor().execute(() -> {
             try {
@@ -136,7 +148,7 @@ public class CraftingRecipeOutput {
         ItemStack[][] grid = new ItemStack[3][3];
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
-                grid[row][col] = ItemStack.EMPTY;
+                grid[row][col] = ItemStackUtil.empty();
             }
         }
 
@@ -148,8 +160,8 @@ public class CraftingRecipeOutput {
                 int col = i % width;
                 if (row < 3 && col < 3) {
                     Ingredient ingredient = ingredients.get(i);
-                    if (!ingredient.isEmpty() && ingredient.getMatchingStacks().length > 0) {
-                        grid[row][col] = ingredient.getMatchingStacks()[0];
+                    if (!ingredient.isEmpty() && IngredientUtil.getMatchingStacks(ingredient).length > 0) {
+                        grid[row][col] = IngredientUtil.getMatchingStacks(ingredient)[0];
                     }
                 }
             }
@@ -160,8 +172,8 @@ public class CraftingRecipeOutput {
                 int col = i % 3;
                 if (row < 3) {
                     Ingredient ingredient = ingredients.get(i);
-                    if (!ingredient.isEmpty() && ingredient.getMatchingStacks().length > 0) {
-                        grid[row][col] = ingredient.getMatchingStacks()[0];
+                    if (!ingredient.isEmpty() && IngredientUtil.getMatchingStacks(ingredient).length > 0) {
+                        grid[row][col] = IngredientUtil.getMatchingStacks(ingredient)[0];
                     }
                 }
             }
