@@ -48,7 +48,7 @@ public class RecipeImageExporter extends CommonModInitializer {
                         if (!PlatformUtil.isClient()) return;
 
                         RenderSystem.recordRenderCall(() -> {
-                            CraftingRecipeOutput.exportCraftingRecipesForMod(modid);
+                            CraftingRecipeOutput.export(modid);
                         });
 
                         File exportDir = new File(ClientUtil.getRunDirectory(), "rie76/" + modid);

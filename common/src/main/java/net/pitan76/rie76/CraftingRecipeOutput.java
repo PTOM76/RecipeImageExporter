@@ -34,7 +34,7 @@ public class CraftingRecipeOutput {
 
     private static final CompatIdentifier CRAFTING_TABLE_TEXTURE = CompatIdentifier.of("textures/gui/container/crafting_table.png");
 
-    public static void exportCraftingRecipesForMod(String modId) {
+    public static void export(String modId) {
         World world = ClientUtil.getWorld();
         RecipeManager recipeManager = world.getRecipeManager();
 
@@ -49,13 +49,13 @@ public class CraftingRecipeOutput {
             exportDir.mkdirs();
 
             String baseName = itemId.getPath();
-            File outputFile = getUniqueFile(exportDir, baseName + ".png");
+            File outputFile = getFile(exportDir, baseName + ".png");
 
-            exportRecipeImage(recipe.value(), outputFile);
+            export(recipe.value(), outputFile);
         }
     }
 
-    private static File getUniqueFile(File dir, String baseName) {
+    private static File getFile(File dir, String baseName) {
         int i = 1;
         File file = new File(dir, baseName);
         while (file.exists()) {
@@ -66,7 +66,7 @@ public class CraftingRecipeOutput {
         return file;
     }
 
-    private static void exportRecipeImage(CraftingRecipe recipe, File outputFile) {
+    private static void export(CraftingRecipe recipe, File outputFile) {
         MinecraftClient client = ClientUtil.getClient();
         World world = ClientUtil.getWorld();
 
@@ -144,6 +144,11 @@ public class CraftingRecipeOutput {
         });
     }
 
+    /**
+     * レシピの3x3グリッドに配置されたItemStackを取得する
+     * @param recipe CraftingRecipe
+     * @return 3x3のItemStack配列
+     */
     private static ItemStack[][] getRecipeGrid(CraftingRecipe recipe) {
         ItemStack[][] grid = new ItemStack[3][3];
         for (int row = 0; row < 3; row++) {
