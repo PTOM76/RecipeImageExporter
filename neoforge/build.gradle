@@ -29,9 +29,9 @@ dependencies {
 
     modApi "net.pitan76:mcpitanlib-neoforge-${rootProject.mcpitanlib_version}"
 
-    modImplementation "me.shedaniel:RoughlyEnoughItems-neoforge:${rootProject.rei_version}"
-    modApi "me.shedaniel:RoughlyEnoughItems-api-neoforge:${rootProject.rei_version}"
-    modApi "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:${rootProject.rei_version}"
+    //modImplementation "me.shedaniel:RoughlyEnoughItems-neoforge:${rootProject.rei_version}"
+    //modApi "me.shedaniel:RoughlyEnoughItems-api-neoforge:${rootProject.rei_version}"
+    //modApi "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:${rootProject.rei_version}"
 }
 
 processResources {

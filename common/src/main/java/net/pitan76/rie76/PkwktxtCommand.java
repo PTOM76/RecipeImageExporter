@@ -74,7 +74,11 @@ public class PkwktxtCommand extends LiteralCommand {
         StringBuilder output = new StringBuilder();
 
         String beforeLang = LanguageUtil.getLanguage();
+
+        System.out.println("Exporting recipes in PukiWiki format for mod: " + modId + ", language: " + lang + ", beforeLang: " + beforeLang);
+
         LanguageUtil.setLanguage(lang);
+        LanguageUtil.reload(ClientUtil.getResourceManager());
 
         for (RecipeEntry<CraftingRecipe> recipe : recipes) {
             ItemStack result = recipe.value().getResult(world.getRegistryManager());
@@ -130,10 +134,12 @@ public class PkwktxtCommand extends LiteralCommand {
             String resultName = ItemUtil.getNameAsString(result.getItem());
 
             // PukiWiki形式の行を生成
-            String recipeId = recipe.id().toString();
+            String namespace = recipe.id().getNamespace();
+            String path = recipe.id().getPath();
+
             output.append("|~").append(resultName)
-                  .append(" |BGCOLOR(#C6C6C6):#img(https://pitan76.github.io/mcrecipe/additionalsmallstairs/")
-                  .append(recipeId).append(".png) | ")
+                  .append(" |BGCOLOR(#C6C6C6):#img(https://pitan76.github.io/mcrecipe/" + namespace + "/")
+                  .append(path).append(".png) | ")
                   .append(materialText)
                   .append(" | 説明 |\n");
         }
