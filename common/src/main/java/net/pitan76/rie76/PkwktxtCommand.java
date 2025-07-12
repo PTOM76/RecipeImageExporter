@@ -1,16 +1,25 @@
 package net.pitan76.rie76;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.CraftingRecipe;
+import net.minecraft.recipe.RecipeEntry;
+import net.minecraft.recipe.RecipeManager;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.world.World;
 import net.pitan76.easyapi.FileControl;
 import net.pitan76.mcpitanlib.api.command.CommandSettings;
 import net.pitan76.mcpitanlib.api.command.LiteralCommand;
 import net.pitan76.mcpitanlib.api.command.argument.StringCommand;
 import net.pitan76.mcpitanlib.api.event.ServerCommandEvent;
 import net.pitan76.mcpitanlib.api.event.StringCommandEvent;
+import net.pitan76.mcpitanlib.api.util.CompatIdentifier;
 import net.pitan76.mcpitanlib.api.util.PlatformUtil;
 import net.pitan76.mcpitanlib.api.util.client.ClientUtil;
+import net.pitan76.mcpitanlib.api.util.client.LanguageUtil;
+import net.pitan76.mcpitanlib.api.util.item.ItemUtil;
 
 import java.io.File;
+import java.util.List;
 
 public class PkwktxtCommand extends LiteralCommand {
     @Override
@@ -23,19 +32,8 @@ public class PkwktxtCommand extends LiteralCommand {
                     @Override
                     public void execute(StringCommandEvent e) {
                         String lang = e.getArgument("lang", String.class);
-                        if (lang.isEmpty()) {
-                            e.sendFailure("Please provide a language code to export recipes in PukiWiki format.");
-                            return;
-                        }
-
-                        if (!PlatformUtil.isClient()) return;
-
-                        RenderSystem.recordRenderCall(() -> {
-                            CraftingRecipeOutput.exportPukiWiki(lang);
-                        });
-
-                        File exportDir = new File(ClientUtil.getRunDirectory(), "rie76/" + lang);
-                        e.sendSuccess("Exported recipes in PukiWiki format to \"" + exportDir.toString() + "/\" directory.");
+                        String modid = e.getArgument("modid", String.class);
+                        outputPkwktxt(modid, lang);
                     }
 
                     @Override
@@ -53,19 +51,7 @@ public class PkwktxtCommand extends LiteralCommand {
             @Override
             public void execute(StringCommandEvent e) {
                 String modid = e.getArgument("modid", String.class);
-                if (modid.isEmpty()) {
-                    e.sendFailure("Please provide a mod ID to export recipes for.");
-                    return;
-                }
-
-                if (!PlatformUtil.isClient()) return;
-
-
-
-                FileControl.fileWriteContents(
-                        new File(ClientUtil.getRunDirectory(), "rie76/" + modid + ".txt"),
-                        CraftingRecipeOutput.exportPukiWiki(modid)
-                );
+                outputPkwktxt(modid, "ja_jp");
             }
         });
     }
@@ -75,17 +61,37 @@ public class PkwktxtCommand extends LiteralCommand {
         e.sendSuccess("Use /rie76 pkwktxt <modid> to export recipes in PukiWiki format for a specific mod.");
     }
 
-    public static void outputPkwktxt(String modid, String lang) {
+    public static void outputPkwktxt(String modId, String lang) {
         if (!PlatformUtil.isClient()) return;
 
-        RenderSystem.recordRenderCall(() -> {
-            CraftingRecipeOutput.exportPukiWiki(modid, lang);
-        });
+        World world = ClientUtil.getWorld();
+        RecipeManager recipeManager = world.getRecipeManager();
 
-        File exportDir = new File(ClientUtil.getRunDirectory(), "rie76/" + modid);
+        List<RecipeEntry<CraftingRecipe>> recipes = recipeManager.listAllOfType(RecipeType.CRAFTING);
+
+        StringBuilder output = new StringBuilder();
+
+        String beforeLang = LanguageUtil.getLanguage();
+        LanguageUtil.setLanguage(lang);
+
+        for (RecipeEntry<CraftingRecipe> recipe : recipes) {
+            ItemStack result = recipe.value().getResult(world.getRegistryManager());
+            ItemStack[][] recipeGrid = CraftingUtil.getRecipeGrid(recipe.value());
+
+            CompatIdentifier itemId = ItemUtil.toId(result.getItem());
+            if (!itemId.getNamespace().equals(modId)) continue;
+
+
+        }
+
+        LanguageUtil.setLanguage(beforeLang);
+
+        File exportDir = new File(ClientUtil.getRunDirectory(), "rie76/" + modId);
         exportDir.mkdirs();
 
         File outputFile = new File(exportDir, lang + ".txt");
-        FileControl.fileWriteContents(outputFile, CraftingRecipeOutput.exportPukiWiki(modid, lang));
+        FileControl.fileWriteContents(outputFile, output.toString());
+
+
     }
 }

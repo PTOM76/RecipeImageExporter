@@ -17,6 +17,6 @@ public class MainCommand extends LiteralCommand {
     @Override
     public void execute(ServerCommandEvent e) {
         e.sendSuccess("- /rie76 export <modid> : Export recipes for a specific mod. (alias: /rie76 e) \n" +
-                "- /rie76 pkwktxt <lang> : Export recipes in PukiWiki format for a specific language.");
+                "- /rie76 pkwktxt <modid> <lang> : Export recipes in PukiWiki format for a specific language.");
     }
 }

@@ -99,7 +99,7 @@ public class CraftingRecipeOutput {
 
         RenderUtil.RendererUtil.drawTexture(drawObject, CRAFTING_TABLE_TEXTURE, gridX, gridY, 29, 16, 116, 54);
 
-        ItemStack[][] recipeGrid = getRecipeGrid(recipe);
+        ItemStack[][] recipeGrid = CraftingUtil.getRecipeGrid(recipe);
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
                 ItemStack stack = recipeGrid[row][col];
@@ -142,47 +142,5 @@ public class CraftingRecipeOutput {
                 nativeImage.close();
             }
         });
-    }
-
-    /**
-     * レシピの3x3グリッドに配置されたItemStackを取得する
-     * @param recipe CraftingRecipe
-     * @return 3x3のItemStack配列
-     */
-    private static ItemStack[][] getRecipeGrid(CraftingRecipe recipe) {
-        ItemStack[][] grid = new ItemStack[3][3];
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
-                grid[row][col] = ItemStackUtil.empty();
-            }
-        }
-
-        if (recipe instanceof ShapedRecipe shapedRecipe) {
-            int width = shapedRecipe.getWidth();
-            List<Ingredient> ingredients = shapedRecipe.getIngredients();
-            for (int i = 0; i < ingredients.size(); i++) {
-                int row = i / width;
-                int col = i % width;
-                if (row < 3 && col < 3) {
-                    Ingredient ingredient = ingredients.get(i);
-                    if (!ingredient.isEmpty() && IngredientUtil.getMatchingStacks(ingredient).length > 0) {
-                        grid[row][col] = IngredientUtil.getMatchingStacks(ingredient)[0];
-                    }
-                }
-            }
-        } else if (recipe instanceof ShapelessRecipe) {
-            List<Ingredient> ingredients = recipe.getIngredients();
-            for (int i = 0; i < ingredients.size(); i++) {
-                int row = i / 3;
-                int col = i % 3;
-                if (row < 3) {
-                    Ingredient ingredient = ingredients.get(i);
-                    if (!ingredient.isEmpty() && IngredientUtil.getMatchingStacks(ingredient).length > 0) {
-                        grid[row][col] = IngredientUtil.getMatchingStacks(ingredient)[0];
-                    }
-                }
-            }
-        }
-        return grid;
     }
 }
